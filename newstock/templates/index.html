@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock Prediction - FinPredict</title>
+
+  <link rel="stylesheet" href="./static/style.css">
+  <link rel="stylesheet" href="./static/style2.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">FinPredict</div>
+    <div class="nav-links">
+      <a href="/">Home</a>
+    </div>
+  </nav>
+  <div class="prediction-container">
+    <h2 id="stock-name">Selected Stock: {{ company }}</h2>
+    <p><strong>Symbol:</strong> {{ symbol }}</p>
+   
+    <button id="predict-btn">Predict Next Trading Day Price</button>
+  </div>
+  <div class="prediction-result" id="prediction-result">
+    <h3>Predicted Prices</h3>
+    <div id="loading" style="display: none;">
+      <p>Analyzing stock data and training model... This may take a moment.</p>
+      <div class="loader"></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Stock Name</th>
+          <th>Date</th>
+          <th>Predicted Highest Price</th>
+        </tr>
+      </thead>
+      <tbody id="prediction-table">
+        <tr><td colspan="3">Click Predict to see next trading day's price</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const predictBtn = document.getElementById("predict-btn");
+      const predictionTable = document.getElementById("prediction-table");
+      const loadingDiv = document.getElementById("loading");
+      
+      predictBtn.addEventListener("click", async () => {
+        try {
+          // Show loading indicator
+          loadingDiv.style.display = "block";
+          predictionTable.innerHTML = `<tr><td colspan="3">Predicting...</td></tr>`;
+         
+          const response = await fetch("/predict_api", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              tickers: ["{{ symbol }}"]
+            }),
+          });
+          
+          const data = await response.json();
+          console.log("API Response:", data); // Debug: Log the full response
+          
+          // Hide loading indicator
+          loadingDiv.style.display = "none";
+          
+          // Check different possible response formats
+          let predictedPrice;
+          let predictionDate;
+          
+          // Format 1: Direct key-value with ticker as key
+          if (data["{{ symbol }}"] !== undefined) {
+            predictedPrice = data["{{ symbol }}"];
+            
+            // Use built-in next trading day calculation
+            const today = new Date();
+            // Skip weekends
+            if (today.getDay() === 5) { // Friday
+              today.setDate(today.getDate() + 3); // Skip to Monday
+            } else if (today.getDay() === 6) { // Saturday
+              today.setDate(today.getDate() + 2); // Skip to Monday  
+            } else {
+              today.setDate(today.getDate() + 1); // Next day
+            }
+            predictionDate = today.toISOString().split("T")[0];
+          }
+          // Format 2: Nested structure with predictions and next_trading_date
+          else if (data.predictions && data.predictions["{{ symbol }}"] !== undefined) {
+            predictedPrice = data.predictions["{{ symbol }}"];
+            predictionDate = data.next_trading_date || new Date().toISOString().split("T")[0];
+          }
+          // Format 3: Some other structure
+          else {
+            // Try to find the data somewhere in the response
+            predictedPrice = "Unable to parse prediction";
+            predictionDate = new Date().toISOString().split("T")[0];
+            
+            // If we can't find the prediction in expected places, display the entire response
+            predictionTable.innerHTML = `
+              <tr>
+                <td colspan="3">
+                  <p>Could not parse prediction correctly.</p>
+                  <p>Response: ${JSON.stringify(data)}</p>
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          predictionTable.innerHTML = `
+            <tr>
+              <td>{{ company }}</td>
+              <td>${predictionDate}</td>
+              <td>${predictedPrice}</td>
+            </tr>
+          `;
+        } catch (error) {
+          console.error("Prediction error:", error);
+          loadingDiv.style.display = "none";
+          predictionTable.innerHTML = `<tr><td colspan="3">Error fetching prediction: ${error.message}</td></tr>`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
