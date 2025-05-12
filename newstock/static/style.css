@@ -1,0 +1,102 @@
+/* ✅ Center the main container */
+
+.prediction-container {
+    width: 50%;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* ✅ Stock Name Styling */
+#stock-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* ✅ Label for Date Picker */
+label {
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+/* ✅ Date Picker Styling */
+#date-picker {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+}
+
+/* ✅ Predict Button */
+#predict-btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#predict-btn:hover {
+    background: #0056b3;
+}
+
+/* ✅ Prediction Result Section */
+.prediction-result {
+    width: 60%;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* ✅ Prediction Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 16px;
+}
+
+th {
+    background: #007bff;
+    color: white;
+}
+
+td {
+    background: #f8f8f8;
+}
+
+/* ✅ Mobile Responsiveness */
+@media (max-width: 768px) {
+    .prediction-container, .prediction-result {
+        width: 90%;
+    }
+
+    #date-picker {
+        width: 100%;
+    }
+}
