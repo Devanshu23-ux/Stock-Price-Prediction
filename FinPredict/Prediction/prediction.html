@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction - FinPredict</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="prediction.css">
+    <script>
+        // ✅ Authentication Check
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/auth/check-auth");
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    window.location.href = "../Login/login.html"; // Redirect if not logged in
+                } else {
+                    document.getElementById("username-display").innerText = data.user.username;
+                }
+            } catch (error) {
+                console.error("Authentication check failed:", error);
+                window.location.href = "../Login/login.html";
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">FinPredict</div>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="../Watchlist/watchlist.html">Watchlist</a>
+            <div class="profile-dropdown">
+                <a href="#" id="profile-btn">
+                    <i class="fa-solid fa-user"></i> <span id="username-display">Profile</span>
+                </a>
+                <div class="dropdown-menu" id="logout-menu">
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="prediction-container">
+        <h2 id="stock-name">Selected Stock: </h2>
+        
+        <label for="date-picker">Select a Date:</label>
+        <input type="date" id="date-picker">
+    
+        <button id="predict-btn">Predict</button>
+    </div>
+    
+    <div class="prediction-result" id="prediction-result">
+        <h3>Predicted Prices</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock Name</th>
+                    <th>Date</th>
+                    <th>Predicted Highest Price</th>
+                </tr>
+            </thead>
+            <tbody id="prediction-table">
+                <tr><td colspan="3">Select a date and click Predict</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    
+    <script src="prediction.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ✅ Logout Functionality
+            document.getElementById("logout-btn").addEventListener("click", async (event) => {
+                event.preventDefault();
+                try {
+                    await fetch("/api/auth/logout");
+                    window.location.href = "../Login/login.html"; // Redirect to login page
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            });
+
+            // ✅ Dropdown Menu Toggle
+            const profileBtn = document.getElementById("profile-btn");
+            const logoutMenu = document.getElementById("logout-menu");
+
+            profileBtn.addEventListener("click", (event) => {
+                event.preventDefault();
+                logoutMenu.style.display = logoutMenu.style.display === "block" ? "none" : "block";
+            });
+
+            // ✅ Close dropdown when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!profileBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
+                    logoutMenu.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
