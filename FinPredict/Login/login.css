@@ -1,0 +1,77 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #141e30, #243b55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container */
+.auth-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+    color: #fff;
+}
+
+/* Heading */
+.auth-container h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* Input Fields */
+.auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px -8px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Button */
+.auth-container button {
+    width: 40%;
+    padding: 10px;
+    background: #1db954;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.auth-container button:hover {
+    background: #17a34a;
+}
+
+/* Links */
+.auth-container p {
+    margin-top: 15px;
+}
+
+.auth-container a {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-container a:hover {
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error {
+    color: #ff4d4d;
+    margin-top: 10px;
+    font-size: 14px;
+}
