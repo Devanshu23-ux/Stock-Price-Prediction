@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist - FinPredict</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="watchlist.css">
+    <script>
+        // ✅ Authentication Check
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/auth/check-auth");
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    window.location.href = "../Login/login.html"; // Redirect if not logged in
+                } 
+            } catch (error) {
+                console.error("Authentication check failed:", error);
+                window.location.href = "../Login/login.html"; // Redirect on error
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">FinPredict</div>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="#" id="logout-btn">Logout</a> <!-- ✅ Logout Option -->
+        </div>
+    </nav>
+
+    <!-- Watchlist Section -->
+    <section class="watchlist-container">
+        <h2>My Watchlist</h2>
+        <p id="message"></p> <!-- ✅ Message if user is not logged in -->
+        <ul id="watchlist"></ul>
+    </section>
+
+    <script src="watchlist.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ✅ Logout Functionality
+            document.getElementById("logout-btn").addEventListener("click", async (event) => {
+                event.preventDefault();
+                try {
+                    await fetch("/api/auth/logout");
+                    window.location.href = "../Login/login.html"; // Redirect to login page
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
