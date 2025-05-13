@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Search - FinPredict</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />     
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="search.css">
+    <script>
+        // ✅ Authentication Check
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/auth/check-auth");
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    window.location.href = "../Login/login.html"; // Redirect if not logged in
+                } else {
+                    document.getElementById("username-display").innerText = data.user.username;
+                }
+            } catch (error) {
+                console.error("Authentication check failed:", error);
+                window.location.href = "../Login/login.html";
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">         
+        <div class="logo">
+            <i class="fa-solid fa-chart-line"></i> 
+            <span class="site-name">FinPredict</span>
+        </div>         
+        <div class="nav-links">                          
+            <div class="profile-dropdown">
+                <a href="#" id="profile-btn">
+                    <i class="fa-solid fa-user"></i> <span id="username-display">Profile</span>
+                </a> 
+                <div class="dropdown-menu" id="logout-menu">
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+            <a href="../Watchlist/watchlist.html">Watchlist</a>
+        </div>     
+    </nav>
+
+    <!-- Stock Search Section -->
+    <section class="stock-search">
+        <h2>Search for a Stock</h2>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search" placeholder="Enter stock name or symbol...">
+        </div>
+        <div id="results"></div>
+        <ul id="stock-list"></ul>
+    </section>
+
+    <script src="search.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ✅ Logout Functionality
+            document.getElementById("logout-btn").addEventListener("click", async (event) => {
+                event.preventDefault();
+                try {
+                    await fetch("/api/auth/logout");
+                    window.location.href = "../Login/login.html"; // Redirect to login page
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            });
+
+            // ✅ Dropdown Menu Toggle
+            const profileBtn = document.getElementById("profile-btn");
+            const logoutMenu = document.getElementById("logout-menu");
+
+            profileBtn.addEventListener("click", (event) => {
+                event.preventDefault();
+                logoutMenu.style.display = logoutMenu.style.display === "block" ? "none" : "block";
+            });
+
+            // ✅ Close dropdown when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!profileBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
+                    logoutMenu.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
