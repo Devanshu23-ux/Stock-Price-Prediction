@@ -1,0 +1,128 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>     
+    <meta charset="UTF-8">     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <title>FinPredict Dashboard</title>     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />     
+    <link rel="stylesheet" href="style.css"> 
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/auth/check-auth");
+                const data = await response.json();
+                
+                if (!data.authenticated) {
+                    window.location.href = "Login/login.html";
+                } else {
+                    document.getElementById("username-display").innerText = data.user.username;
+                }
+            } catch (error) {
+                console.error("Authentication check failed:", error);
+                window.location.href = "Login/login.html";
+            }
+        });
+    </script>
+</head> 
+<body>     
+    <!-- Main Navigation Bar -->     
+    <nav class="navbar">         
+        <div class="logo">
+            <i class="fa-solid fa-chart-line" aria-hidden="true"></i> 
+            <span class="site-name">FinPredict</span>
+        </div>         
+        <div class="nav-links">                          
+            <div class="profile-dropdown">
+                <a href="#" id="profile-btn">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i> <span id="username-display">Profile</span>
+                </a> 
+                <div class="dropdown-menu" id="logout-menu">
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>     
+    </nav>    
+
+    <!-- Secondary Navigation Bar -->
+    <nav class="sub-navbar">
+        <a href="#about-us">About Us</a>
+        <a href="Watchlist/watchlist.html">Watchlist</a>
+    </nav>
+
+    <!-- Ad / Sliding Images Section -->     
+    <div class="slider">         
+        <div class="slides">             
+            <img src="images/ad1.webp" alt="Stock Market Analysis Ad" class="slide">             
+            <img src="images/ad2.webp" alt="Stock Investment Strategies Ad" class="slide">             
+            <img src="images/ad3.webp" alt="Financial Growth Ad" class="slide">         
+        </div>     
+    </div>      
+    
+    <!-- Main Content Section -->     
+    <div class="main-content">         
+        <button class="predict-btn" onclick="window.location.href='search/search.html'">Predict Stock</button>    
+    </div>    
+    
+    <!-- About Us Section -->
+    <section class="about-us" id="about-us">
+        <div class="about-content">
+            <img src="images/logo.webp" alt="FinPredict Logo" class="about-image">
+            <div class="about-text">
+                <h2>About Us</h2>
+                <p>FinPredict is a stock price prediction platform designed to provide insights into market trends using advanced analytics and AI-driven forecasting. Our mission is to empower investors with data-driven decision-making tools.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->     
+    <footer class="footer">         
+        <p>&copy; 2025 FinPredict. All rights reserved.</p>     
+    </footer>     
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ✅ Dropdown Toggle
+            const profileBtn = document.getElementById("profile-btn");
+            const logoutMenu = document.getElementById("logout-menu");
+
+            profileBtn.addEventListener("click", (event) => {
+                event.preventDefault();
+                logoutMenu.style.display = logoutMenu.style.display === "block" ? "none" : "block";
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!profileBtn.contains(event.target) && !logoutMenu.contains(event.target)) {
+                    logoutMenu.style.display = "none";
+                }
+            });
+
+            // ✅ Logout Functionality
+            document.getElementById("logout-btn").addEventListener("click", async (event) => {
+                event.preventDefault();
+                try {
+                    await fetch("/api/auth/logout");
+                    window.location.href = "Login/login.html";
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            });
+
+            // ✅ Slideshow Functionality
+            let index = 0;
+            const slides = document.querySelectorAll(".slides img");
+
+            function showSlide() {
+                slides.forEach((slide, i) => {
+                    slide.style.opacity = i === index ? "1" : "0"; 
+                });
+                index = (index + 1) % slides.length; 
+            }
+
+            setInterval(showSlide, 3000); // Change image every 3 seconds
+            showSlide(); // Initial call
+        });
+    </script>
+
+</body>  
+</html>
